@@ -26,7 +26,7 @@ let progressBar = document.getElementById('progress-bar');
 let progress = 0;
 let portNo = 443;
 let protocol = "https";
-let language = localStorage.getItem('lang') || 'fa'
+let language = localStorage.getItem('lang') || 'cn'
 
 document.getElementById('max-ip').value = localStorage.getItem('max-ip') || 1;
 document.getElementById('max-latency').value = localStorage.getItem('max-latency') || 100;
