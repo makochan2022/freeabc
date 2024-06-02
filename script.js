@@ -2,7 +2,7 @@ let cfIPv4 = []
 let cfIPv4ToScan = []
 const noOfEachRange24 = 30
 const client = new XMLHttpRequest();
-client.open('GET', 'https://raw.githubusercontent.com/vfarid/cf-ip-scanner/main/ipv4.txt');
+client.open('GET', './ipv4.txt');
 client.onreadystatechange = function() {
   cfIPv4 = client.responseText.split("\n").map((cidr) => cidr.trim()).filter((cidr) => isCIDR(cidr));
   document.getElementById('btn-start').disabled = false;
@@ -28,8 +28,8 @@ let portNo = 443;
 let protocol = "https";
 let language = localStorage.getItem('lang') || 'fa'
 
-document.getElementById('max-ip').value = localStorage.getItem('max-ip') || 10;
-document.getElementById('max-latency').value = localStorage.getItem('max-latency') || 600;
+document.getElementById('max-ip').value = localStorage.getItem('max-ip') || 1;
+document.getElementById('max-latency').value = localStorage.getItem('max-latency') || 100;
 document.getElementById('ip-regex').value = localStorage.getItem('ip-regex');
 document.getElementById('ip-include').value = localStorage.getItem('ip-include');
 document.getElementById('ip-exclude').value = localStorage.getItem('ip-exclude');
