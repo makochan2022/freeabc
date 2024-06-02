@@ -220,7 +220,7 @@ async function testIPs(ipList) {
     const multiply = maxLatency <= 500 ? 1.5 : (maxLatency <= 1000 ? 1.2 : 1);
     let timeout = 1.5 * multiply * maxLatency;
     let chNo = 0;
-    for (const ch of ['', '|', '/', '-', '\\']) {
+    for (const ch of ['']) {
       const timeoutId = setTimeout(() => {
         controller.abort();
       }, timeout);
@@ -255,9 +255,9 @@ async function testIPs(ipList) {
       chNo++;
     }
 
-    const latency = Math.floor((performance.now() - startTime) / 5);
+    const latency = Math.floor((performance.now() - startTime) / 1);
     console.log(testResult, latency, maxLatency)
-    if (testResult >= 3 && latency <= maxLatency) {
+    if (testResult >= 1 && latency <= maxLatency) {
       numberOfWorkingIPs++;
       validIPs.push({ip: ip, latency: latency});
       const sortedArr = validIPs.sort((a, b) => a.latency - b.latency);
