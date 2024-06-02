@@ -44,6 +44,7 @@ function setProtocol() {
   };
 
   portNo = document.getElementById('port-no').value || localStorage.getItem('port-no');
+  console.log(portNo)
   document.getElementById('port-no').innerHTML = "";
   if (document.getElementById('protocol').value == 'http') {
     for(let port of ports.http) {
@@ -213,7 +214,12 @@ async function testIPs(ipList) {
     }
     testNo++;
     let testResult = 0;
-    let url = `${protocol}://${ip}:${portNo}/cdn-cgi/trace`;
+    let url = null;
+    if (protocol == 'https') {
+      url = `https://${ip}:${portNo}/__down`;
+    } else {
+      url = `http://${ip}:${portNo}/cdn-cgi/trace`;
+    }
 
     const startTime = performance.now();
     const controller = new AbortController();
@@ -243,11 +249,12 @@ async function testIPs(ipList) {
         const response = await fetch(url, {
           signal: controller.signal,
         });
-        console.log(`${ip}   ${ch}   OK`)
+
         testResult++;
       } catch (error) {
-        console.log(`${ip}   ${ch}   Fail`, error.name)
-        if (!["AbortError", "TypeError"].includes(error.name)) {
+        if (error.name === "AbortError") {
+          //
+        } else {
           testResult++;
         }
       }
@@ -256,15 +263,15 @@ async function testIPs(ipList) {
     }
 
     const latency = Math.floor((performance.now() - startTime) / 1);
-    console.log(testResult, latency, maxLatency)
-    if (testResult >= 1 && latency <= maxLatency) {
+
+    if (testResult === 1 && latency <= maxLatency) {
       numberOfWorkingIPs++;
       validIPs.push({ip: ip, latency: latency});
       const sortedArr = validIPs.sort((a, b) => a.latency - b.latency);
       const tableRows = sortedArr.map(obj => `
         <tr>
           <td></td>
-          <td>${obj.ip}</td>
+          <td><a href="#" onclick="copyToClipboard('${obj.ip}'); return false;">${obj.ip}</a></td>
           <td>${obj.latency}ms</td>
           <td>
           <button class="btn btn-outline-secondary btn-sm" onclick="copyToClipboard('${obj.ip}')"><img height="16px" src="assets/icon-copy.png" /></button>
@@ -302,7 +309,7 @@ async function testIPs(ipList) {
     `;
   } else {
     if (window.self !== window.top) {
-      window.top.postMessage({cleanIPs: validIPs.map(el => el.ip).join('\n')}, '*');
+      window.top.postMessage(validIPs.map(el => el.ip).join('\n'), '*');
     }
 
     document.getElementById('test-no').innerHTML = `
@@ -314,12 +321,25 @@ async function testIPs(ipList) {
   setLang(language)
 }
 
-function copyToClipboard(ip) {
-  window.navigator.clipboard.writeText(ip).then(() => {
-    alert('آی‌پی‌ در کلیپ‌بورد کپی شد.');
-  }).catch(() => {
-    alert('مشکلی پیش آمده است!');
-  });
+// JavaScript 代码
+function copyToClipboard(text) {
+    var textarea = document.getElementById('clipboard-textarea');
+    textarea.value = text;
+    textarea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        if (successful) {
+            // 复制成功，你可以添加一些提示信息或其他反馈
+            alert('成功复制优选IP');
+        } else {
+            // 复制失败，你可以添加一些提示信息或其他反馈
+            alert('复制优选IP失败，请手动复制');
+        }
+    } catch (err) {
+        // 发生异常，复制失败
+        alert('复制优选IP失败：' + err);
+    }
 }
 
 function copyAllToClipboard(ip) {
