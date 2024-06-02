@@ -1,9 +1,25 @@
-    - name: Generate UUID
-      run: |
-        uuid=$(uuidgen)
-        echo "UUID: $uuid" >> uuids.txt
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        git add uuids.txt
-        git commit -m "Add UUID"
-        git push
+name: Generate UUID every 10 minutes
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+
+jobs:
+  update-uuid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Generate UUID and update file
+        run: |
+          uuid=$(uuidgen)
+          echo $uuid > uuid.txt
+
+      - name: Commit and push if it's different
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "Update UUID" || exit 0  # 如果没有变化，则不提交
+          git push
