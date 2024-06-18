@@ -330,16 +330,40 @@ function copyToClipboard(text) {
     try {
         var successful = document.execCommand('copy');
         if (successful) {
-            // 复制成功，你可以添加一些提示信息或其他反馈
-            alert('成功复制优选IP');
+            // 复制成功，显示特效提示
+            showTooltip('复制成功');
         } else {
-            // 复制失败，你可以添加一些提示信息或其他反馈
-            alert('复制优选IP失败，请手动复制');
+            // 复制失败，显示特效提示
+            showTooltip('复制失败，请手动复制');
         }
     } catch (err) {
-        // 发生异常，复制失败
-        alert('复制优选IP失败：' + err);
+        // 发生异常，显示特效提示
+        showTooltip('复制失败：' + err);
     }
+}
+
+function showTooltip(message) {
+    var tooltip = document.createElement('div');
+    tooltip.style.position = 'fixed';
+    tooltip.style.top = '50%';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    tooltip.style.backgroundColor = '#333';
+    tooltip.style.color = '#fff';
+    tooltip.style.padding = '10px 20px';
+    tooltip.style.borderRadius = '5px';
+    tooltip.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.3)';
+    tooltip.style.zIndex = '9999';
+    tooltip.innerText = message;
+    document.body.appendChild(tooltip);
+
+    setTimeout(function() {
+        tooltip.style.transition = 'opacity 0.5s';
+        tooltip.style.opacity = '0';
+        setTimeout(function() {
+            document.body.removeChild(tooltip);
+        }, 500);
+    }, 2000);
 }
 
 function copyAllToClipboard(ip) {
