@@ -1,8 +1,8 @@
-name: Generate UUID every 10 minutes
+name: Generate UUID every 1 天之前
 
 on:
   schedule:
-    - cron: '*/60 * * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   update-uuid:
