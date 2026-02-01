@@ -12,7 +12,7 @@ let sharedUUID = {
 // 获取当前小时整点的秒级时间戳（UTC 或本地均可，这里用本地时间，更符合用户体验）
 function getCurrentHourPeriod() {
   const now = new Date();
-  now.setMinutes(0, 0, 0);
+  now.setHours(0, 0, 0);
   return Math.floor(now.getTime() / 1000);
 }
 
